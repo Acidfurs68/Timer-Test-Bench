@@ -4,7 +4,7 @@
 
 
 void sendI2CCommand(byte command) {
-  Wire.beginTransmission(0x08);  // Adresse I2C de l'esclave
+  Wire.beginTransmission(0x08); 
   Wire.write(command);
   Wire.endTransmission();
 
