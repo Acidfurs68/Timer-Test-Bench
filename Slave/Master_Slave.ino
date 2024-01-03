@@ -38,53 +38,50 @@ void loop() {
     }
 
     digitalWrite(LED_PIN, HIGH);
-    Wire.beginTransmission(0x09); // Commence la transmission à l'adresse de l'esclave
-    Wire.write("Ping"); // Envoie le message
-    Wire.endTransmission(); // Termine la transmission
+    Wire.beginTransmission(0x09); 
+    Wire.write("Ping"); 
+    Wire.endTransmission(); 
     digitalWrite(LED_PIN, LOW);
 
-    delay(500); // Attente pour la réponse
+    delay(500); 
 
-    Wire.requestFrom(0x09, 4); // Demande 4 caractères de l'esclave
+    Wire.requestFrom(0x09, 4); 
     bool responseReceived = false;
     while(Wire.available()) {
-        char c = Wire.read(); // reçoit un byte en tant que caractère
-        Serial.print(c); // Affiche le caractère sur le moniteur série
+        char c = Wire.read(); 
+        Serial.print(c); 
         responseReceived = true;
     }
     if (responseReceived) {
-        lastResponseTime = millis(); // Mise à jour du temps de la dernière réponse
+        lastResponseTime = millis(); 
     }
     Serial.println();
-    delay(500); // Attente avant de renvoyer un message
+    delay(500); 
 
-    // Vérifier si la communication est perdue
     if (millis() - lastResponseTime > responseTimeout) {
 
         for (int i = 0; i < RELAY_COUNT; i++) {
             digitalWrite(relayPins[i], HIGH);
         }
-        currentRelay = RELAY_COUNT; // S'assurer que tous les relais sont considérés comme activés
+        currentRelay = RELAY_COUNT; 
     }
         
     if (digitalRead(pinSensor) == HIGH) {
-        // Le pont est retiré, activer les relais en séquence
         for (int i = 0; i < RELAY_COUNT; i++) {
-            digitalWrite(relayPins[i], HIGH); // Activer le relais
-            delay(relayDelay);              // Attendre
-            digitalWrite(relayPins[i], LOW);  // Désactiver le relais
+            digitalWrite(relayPins[i], HIGH); 
+            delay(relayDelay);              
+            digitalWrite(relayPins[i], LOW);  
         }
     } else {
-        // Réinitialiser l'état des relais lorsque le pont est en place
         resetRelays();
     }
 
     // Gestion du buzzer
     if (digitalRead(pinSensor) == HIGH) {
-        tone(pinBuzzer, 1000);  // Fréquence du buzzer à 1000 Hz
-        delay(100);             // Durée du son
-        noTone(pinBuzzer);      // Arrêter le son
-        //delay(100);             // Durée de pause entre les sons
+        tone(pinBuzzer, 1000);  
+        delay(100);             
+        noTone(pinBuzzer);      
+        delay(100);             
     } else {
         noTone(pinBuzzer);
     }
@@ -116,7 +113,6 @@ void activateRelays() {
             digitalWrite(relayPins[currentRelay], HIGH);
             currentRelay++;
         }
-        // Réinitialisez currentRelay si tous les relais ont été activés
         if (currentRelay >= RELAY_COUNT) {
             currentRelay = 0;
         }
@@ -125,10 +121,7 @@ void activateRelays() {
 
 
 void processResponseFromSlave2() {
-    // Mettre à jour le temps de la dernière réponse
     lastResponseTime = millis();
-
-    // ... Traitement de la réponse ...
 }
 
 void resetRelays() {
