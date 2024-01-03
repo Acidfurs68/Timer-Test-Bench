@@ -1,7 +1,7 @@
-#include <Wire.h>
 #include <Keypad.h>
 #include <LedControl.h>
 #include "I2CCommunication.h"
+#include "I2Cdev.h'
 
 const byte ROWS = 4;
 const byte COLS = 4;
@@ -170,26 +170,30 @@ void loop() {
   if (isCountingDown) {
     delay(50);
     csecondsLeft -= decrement;
+    updateDisplay();
+
+    if (csecondsLeft % 60 == 0) {
+      tone(playSound, 3236, 150);
+    }
 
     if (csecondsLeft < 0) {
       csecondsLeft = 0;
       if (!explosed) {
-        sendI2CCommand(0xFF); // Envoyer une commande I2C à l'esclave
         digitalWrite(13, HIGH);
         digitalWrite(A1, HIGH);
         digitalWrite(A3, HIGH);
         digitalWrite(A6, HIGH);
+        tone(playSound, 2000, 6000);
         explosed = true;
       }
     }
-    updateDisplay();
-    if (csecondsLeft % 60 == 0) {
-      tone(playSound, 3236, 150);
-      if (csecondsLeft == 0) {
-        // Envoyer une nouvelle commande pour démarrer la séquence des relais
+
+    if (csecondsLeft == 0) {
         sendI2CCommand(0xAA);
-      }
+        sendI2CCommand(0xFF);
     }
   }
 }
+
+
 
