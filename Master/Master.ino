@@ -44,17 +44,21 @@ void setup() {
   lc.setIntensity(0, 10);
   lc.clearDisplay(0);
 
-  tone(playSound, 2000, 80); digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(150);
-  tone(playSound, 2000, 80); digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(150);
-  tone(playSound, 2000, 80); digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(150);
-  
-  lc.setChar(0,7,'-',false); lc.setChar(0,0,'-',false); delay(80); lc.clearDisplay(0); 
-  lc.setChar(0,6,'-',false); lc.setChar(0,1,'-',false); delay(80); lc.clearDisplay(0); 
-  lc.setChar(0,5,'-',false); lc.setChar(0,2,'-',false); delay(80); lc.clearDisplay(0); 
-  lc.setChar(0,4,'-',false); lc.setChar(0,3,'-',false); delay(80); lc.clearDisplay(0); 
-  lc.setChar(0,5,'-',false); lc.setChar(0,2,'-',false); delay(80); lc.clearDisplay(0); 
-  lc.setChar(0,6,'-',false); lc.setChar(0,1,'-',false); delay(80); lc.clearDisplay(0);
-  lc.setChar(0,7,'-',false); lc.setChar(0,0,'-',false); delay(80); lc.clearDisplay(0); 
+for (int i = 0; i < 3; ++i) {
+    tone(playSound, 2000, 80);
+    digitalWrite(13, HIGH);
+    delay(50);
+    digitalWrite(13, LOW);
+    delay(150);
+}
+
+for (int i = 0; i < 1; ++i) {
+    lc.shutdown(i, false);       // Réveiller l'afficheur
+    lc.setIntensity(i, 10);       // Régler la luminosité
+    lc.clearDisplay(i);          // Nettoyer l'afficheur
+  }
+
+  createXEffect();
 
   pinMode(A0, OUTPUT);
   pinMode(A1, OUTPUT);
@@ -65,6 +69,29 @@ void setup() {
   analogWrite(A0, 0);
 
   Wire.begin(8); // Initialise la communication I2C
+}
+
+void createXEffect() {
+    byte a_segment = B01000000; // Représentation binaire du segment 'a'
+    byte d_segment = B00001000; // Représentation binaire du segment 'd'
+
+    for (int i = 0; i < 4; ++i) {
+        // Allumer le segment 'a' au digit i et 'd' au digit 7-i
+        lc.setRow(0, i, d_segment);
+        lc.setRow(0, 7 - i, a_segment);
+
+        delay(66);
+        lc.clearDisplay(0);
+    }
+
+    for (int i = 3; i >= 0; --i) {
+        // Inverser les segments pour le retour
+        lc.setRow(0, i, a_segment);
+        lc.setRow(0, 7 - i, d_segment);
+
+        delay(80);
+        lc.clearDisplay(0);
+    }
 }
 
 void updateDisplay() {
