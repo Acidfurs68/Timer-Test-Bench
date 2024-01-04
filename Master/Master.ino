@@ -53,9 +53,9 @@ for (int i = 0; i < 3; ++i) {
 }
 
 for (int i = 0; i < 1; ++i) {
-    lc.shutdown(i, false);       // Réveiller l'afficheur
-    lc.setIntensity(i, 10);       // Régler la luminosité
-    lc.clearDisplay(i);          // Nettoyer l'afficheur
+    lc.shutdown(i, false);      
+    lc.setIntensity(i, 10);     
+    lc.clearDisplay(i);          
   }
 
   createXEffect();
@@ -68,15 +68,14 @@ for (int i = 0; i < 1; ++i) {
 
   analogWrite(A0, 0);
 
-  Wire.begin(8); // Initialise la communication I2C
+  Wire.begin(8); 
 }
 
 void createXEffect() {
-    byte a_segment = B01000000; // Représentation binaire du segment 'a'
-    byte d_segment = B00001000; // Représentation binaire du segment 'd'
+    byte a_segment = B01000000; 
+    byte d_segment = B00001000; 
 
     for (int i = 0; i < 4; ++i) {
-        // Allumer le segment 'a' au digit i et 'd' au digit 7-i
         lc.setRow(0, i, d_segment);
         lc.setRow(0, 7 - i, a_segment);
 
@@ -85,7 +84,6 @@ void createXEffect() {
     }
 
     for (int i = 3; i >= 0; --i) {
-        // Inverser les segments pour le retour
         lc.setRow(0, i, a_segment);
         lc.setRow(0, 7 - i, d_segment);
 
