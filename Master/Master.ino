@@ -79,7 +79,7 @@ void createXEffect() {
         lc.setRow(0, i, d_segment);
         lc.setRow(0, 7 - i, a_segment);
 
-        delay(66);
+        delay(80);
         lc.clearDisplay(0);
     }
 
